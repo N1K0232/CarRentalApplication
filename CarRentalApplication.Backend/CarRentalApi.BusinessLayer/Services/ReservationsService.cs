@@ -46,8 +46,8 @@ public class ReservationsService : IReservationsService
         var dbReservation = await dataContext.GetAsync<Entities.Reservation>(id);
         if (dbReservation != null)
         {
-            var person = await peopleService.GetPersonAsync(dbReservation.IdPerson);
-            var vehicle = await vehiclesService.GetVehicleAsync(dbReservation.IdVehicle);
+            var person = await peopleService.GetAsync(dbReservation.IdPerson);
+            var vehicle = await vehiclesService.GetAsync(dbReservation.IdVehicle);
             var reservation = mapper.Map<Reservation>(dbReservation);
             reservation.Person = person;
             reservation.Vehicle = vehicle;
