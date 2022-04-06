@@ -6,6 +6,10 @@ namespace CarRentalApi.DataAccessLayer;
 
 public class DataContext : DbContext, IDataContext, IReadOnlyDataContext
 {
+    public DataContext(DbContextOptions<DataContext> options) : base(options)
+    {
+    }
+
     public void Delete<T>(T entity) where T : BaseEntity
     {
         var set = Set<T>();
@@ -37,7 +41,7 @@ public class DataContext : DbContext, IDataContext, IReadOnlyDataContext
     }
     public void Insert<T>(T entity) where T : BaseEntity
     {
-        entity.CreationDate = DateTime.UtcNow;
+        entity.CreatedDate = DateTime.UtcNow;
         entity.LastModifiedDate = null;
         var set = Set<T>();
         set.Add(entity);

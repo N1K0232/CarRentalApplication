@@ -13,7 +13,7 @@ internal abstract class BaseEntityConfiguration<T> : IEntityTypeConfiguration<T>
             .ValueGeneratedOnAdd()
             .IsRequired();
 
-        builder.Property(x => x.CreationDate)
+        builder.Property(x => x.CreatedDate)
             .IsRequired();
 
         builder.Property(x => x.LastModifiedDate)
