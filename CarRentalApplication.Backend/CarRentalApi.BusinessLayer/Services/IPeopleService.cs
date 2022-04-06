@@ -1,6 +1,13 @@
-﻿namespace CarRentalApi.BusinessLayer.Services;
+﻿using CarRentalApi.Shared.Models;
+using CarRentalApi.Shared.Models.Requests;
+
+namespace CarRentalApi.BusinessLayer.Services;
 
 public interface IPeopleService
 {
-
+    Task DeleteAsync();
+    Task DeleteAsync(Guid idPerson);
+    Task<List<Person>> GetPeopleAsync();
+    Task<Person> GetPersonAsync(Guid id);
+    Task<Person> SaveAsync(SavePersonRequest request);
 }
