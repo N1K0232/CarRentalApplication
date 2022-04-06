@@ -23,12 +23,12 @@ public class PeopleController : ControllerBase
     public async Task<IActionResult> GetPerson(Guid id)
     {
         var person = await peopleService.GetAsync(id);
-        if (person == null)
+        if (person != null)
         {
-            return NotFound("the person with the specified id wasn't found");
+            return Ok(person);
         }
 
-        return Ok(person);
+        return NotFound("can't find a person with the specified id");
     }
 
     [HttpPost("SavePerson")]
