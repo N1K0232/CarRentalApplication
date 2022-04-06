@@ -24,5 +24,10 @@ internal class VehicleConfiguration : BaseEntityConfiguration<Vehicle>
         builder.Property(v => v.Plate)
             .HasMaxLength(100)
             .IsRequired();
+
+        builder.Property(v => v.PowerSupplyType)
+            .HasConversion<string>()
+            .HasMaxLength(50)
+            .IsRequired();
     }
 }
