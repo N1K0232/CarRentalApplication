@@ -7,6 +7,6 @@ public interface IVehiclesService
 {
     Task DeleteAsync(Guid id);
     Task DeleteAsync();
-    Task<Vehicle> GetVehicleAsync(Guid id);
+    Task<Vehicle> GetAsync(Guid id);
     Task<Vehicle> SaveAsync(SaveVehicleRequest request);
 }

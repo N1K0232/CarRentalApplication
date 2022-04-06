@@ -22,7 +22,7 @@ public class VehiclesController : ControllerBase
     [ProducesResponseType(404, Type = typeof(string))]
     public async Task<IActionResult> GetVehicle(Guid id)
     {
-        var vehicle = await vehiclesService.GetVehicleAsync(id);
+        var vehicle = await vehiclesService.GetAsync(id);
         if (vehicle != null)
         {
             return Ok(vehicle);

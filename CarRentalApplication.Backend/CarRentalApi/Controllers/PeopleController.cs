@@ -22,7 +22,7 @@ public class PeopleController : ControllerBase
     [ProducesResponseType(404, Type = typeof(string))]
     public async Task<IActionResult> GetPerson(Guid id)
     {
-        var person = await peopleService.GetPersonAsync(id);
+        var person = await peopleService.GetAsync(id);
         if (person == null)
         {
             return NotFound("the person with the specified id wasn't found");

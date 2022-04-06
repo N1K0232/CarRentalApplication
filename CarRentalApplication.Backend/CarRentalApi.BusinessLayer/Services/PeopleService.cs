@@ -37,7 +37,7 @@ public class PeopleService : IPeopleService
             await dataContext.SaveAsync();
         }
     }
-    public async Task<Person> GetPersonAsync(Guid id)
+    public async Task<Person> GetAsync(Guid id)
     {
         var dbPerson = await dataContext.GetAsync<Entities.Person>(id);
         if (dbPerson != null)

@@ -7,6 +7,6 @@ public interface IPeopleService
 {
     Task DeleteAsync();
     Task DeleteAsync(Guid idPerson);
-    Task<Person> GetPersonAsync(Guid id);
+    Task<Person> GetAsync(Guid id);
     Task<Person> SaveAsync(SavePersonRequest request);
 }

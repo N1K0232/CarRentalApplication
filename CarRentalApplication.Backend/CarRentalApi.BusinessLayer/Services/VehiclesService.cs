@@ -37,7 +37,7 @@ public class VehiclesService : IVehiclesService
             await dataContext.SaveAsync();
         }
     }
-    public async Task<Vehicle> GetVehicleAsync(Guid id)
+    public async Task<Vehicle> GetAsync(Guid id)
     {
         var dbVehicle = await dataContext.GetAsync<Entities.Vehicle>(id);
         if (dbVehicle == null)
