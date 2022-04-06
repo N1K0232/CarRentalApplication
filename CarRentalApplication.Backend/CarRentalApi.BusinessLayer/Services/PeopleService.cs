@@ -59,9 +59,9 @@ public class PeopleService : IPeopleService
     }
     public async Task<Person> SaveAsync(SavePersonRequest request)
     {
+        var query = dataContext.GetData<Entities.Person>(trackingChanges: true);
         var dbPerson = request.Id != null ?
-            await dataContext.GetAsync<Entities.Person>(request.Id) :
-            null;
+            await query.FirstOrDefaultAsync(p => p.Id == request.Id) : null;
 
         if (dbPerson == null)
         {
@@ -70,11 +70,7 @@ public class PeopleService : IPeopleService
         }
         else
         {
-            dbPerson.FirstName = request.FirstName;
-            dbPerson.LastName = request.LastName;
-            dbPerson.BirthDate = request.BirthDate;
-            dbPerson.PhoneNumber = request.PhoneNumber;
-            dbPerson.EmailAddress = request.EmailAddress;
+            mapper.Map(request, dbPerson);
             dbPerson.LastModifiedDate = DateTime.UtcNow;
         }
 
