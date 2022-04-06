@@ -40,6 +40,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddScoped<IDataContext>(service => service.GetRequiredService<DataContext>());
 builder.Services.AddScoped<IReadOnlyDataContext>(service => service.GetRequiredService<DataContext>());
 
+builder.Services.AddScoped<IListService, ListService>();
 builder.Services.AddScoped<IPeopleService, PeopleService>();
 
 var app = builder.Build();
