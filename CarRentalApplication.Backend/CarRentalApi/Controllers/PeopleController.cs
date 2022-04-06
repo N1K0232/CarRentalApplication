@@ -17,20 +17,6 @@ public class PeopleController : ControllerBase
         this.peopleService = peopleService;
     }
 
-    [HttpGet("GetPeople")]
-    [ProducesResponseType(200, Type = typeof(List<Person>))]
-    [ProducesResponseType(404, Type = typeof(string))]
-    public async Task<IActionResult> GetPeople()
-    {
-        var people = await peopleService.GetPeopleAsync();
-        if (people == null)
-        {
-            return NotFound("No rows found");
-        }
-
-        return Ok(people);
-    }
-
     [HttpGet("GetPerson")]
     [ProducesResponseType(200, Type = typeof(Person))]
     [ProducesResponseType(404, Type = typeof(string))]
