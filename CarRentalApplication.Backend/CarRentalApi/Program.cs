@@ -43,6 +43,7 @@ builder.Services.AddScoped<IReadOnlyDataContext>(service => service.GetRequiredS
 builder.Services.AddScoped<IListService, ListService>();
 builder.Services.AddScoped<IPeopleService, PeopleService>();
 builder.Services.AddScoped<IVehiclesService, VehiclesService>();
+builder.Services.AddScoped<IReservationsService, ReservationsService>();
 
 var app = builder.Build();
 app.UseProblemDetails();
