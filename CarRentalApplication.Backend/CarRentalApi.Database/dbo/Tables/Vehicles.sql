@@ -4,6 +4,7 @@
 	[Brand] NVARCHAR(100) NOT NULL,
 	[Model] NVARCHAR(100) NOT NULL,
 	[Plate] NVARCHAR(100) NOT NULL UNIQUE,
+	[PowerSupplyType] NVARCHAR(50) NOT NULL,
 	[CreatedDate] DATE NOT NULL,
 	[LastModifiedDate] DATE NULL,
 
