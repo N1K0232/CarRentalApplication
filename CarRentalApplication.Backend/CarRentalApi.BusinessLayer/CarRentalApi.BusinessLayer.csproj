@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<TargetFramework>net6.0</TargetFramework>
@@ -13,8 +13,8 @@
 		</ItemGroup>
 
 		<ItemGroup>
-		  <ProjectReference Include="..\CarRentalApi.DataAccessLayer\CarRentalApi.DataAccessLayer.csproj" />
-		  <ProjectReference Include="..\CarRentalApi.Shared\CarRentalApi.Shared.csproj" />
+				<ProjectReference Include="..\CarRentalApi.DataAccessLayer\CarRentalApi.DataAccessLayer.csproj" />
+				<ProjectReference Include="..\CarRentalApi.Shared\CarRentalApi.Shared.csproj" />
 		</ItemGroup>
 
 </Project>
