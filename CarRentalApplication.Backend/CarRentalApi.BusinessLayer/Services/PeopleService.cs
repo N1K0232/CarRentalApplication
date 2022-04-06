@@ -34,18 +34,6 @@ public class PeopleService : IPeopleService
             await dataContext.SaveAsync();
         }
     }
-    public async Task<List<Person>> GetPeopleAsync()
-    {
-        var query = dataContext.GetData<Entities.Person>();
-        var dbPeople = await query.ToListAsync();
-        if (dbPeople == null || dbPeople.Count == 0)
-        {
-            return null;
-        }
-
-        var people = mapper.Map<List<Person>>(dbPeople);
-        return people;
-    }
     public async Task<Person> GetPersonAsync(Guid id)
     {
         var dbPerson = await dataContext.GetAsync<Entities.Person>(id);
