@@ -1,0 +1,14 @@
+﻿CREATE TABLE [dbo].[Reservations]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL,
+	[IdPerson] UNIQUEIDENTIFIER NOT NULL,
+	[IdVehicle] UNIQUEIDENTIFIER NOT NULL,
+	[Start] DATETIME NOT NULL,
+	[Finish] DATETIME NOT NULL,
+	[CreatedDate] DATE NOT NULL,
+	[LastModifiedDate] DATE NULL,
+
+	PRIMARY KEY(Id),
+	FOREIGN KEY(IdPerson) REFERENCES People(Id),
+	FOREIGN KEY(IdVehicle) REFERENCES Vehicles(Id),
+)

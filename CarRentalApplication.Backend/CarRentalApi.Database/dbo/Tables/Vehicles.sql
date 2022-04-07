@@ -1,0 +1,11 @@
+﻿CREATE TABLE [dbo].[Vehicles]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL,
+	[Brand] NVARCHAR(100) NOT NULL,
+	[Model] NVARCHAR(100) NOT NULL,
+	[Plate] NVARCHAR(100) NOT NULL UNIQUE,
+	[CreatedDate] DATE NOT NULL,
+	[LastModifiedDate] DATE NULL,
+
+	PRIMARY KEY(Id)
+)

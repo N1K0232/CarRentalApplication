@@ -1,0 +1,13 @@
+﻿CREATE TABLE [dbo].[People]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL,
+	[FirstName] NVARCHAR(256) NOT NULL,
+	[LastName] NVARCHAR(256) NOT NULL,
+	[BirthDate] DATE NOT NULL,
+	[PhoneNumber] NVARCHAR(10) UNIQUE NOT NULL,
+	[EmailAddress] NVARCHAR(50) UNIQUE NOT NULL,
+	[CreatedDate] DATE NOT NULL,
+	[LastModifiedDate] DATE NULL,
+
+	PRIMARY KEY(Id)
+)
