@@ -26,20 +26,14 @@ public class ReservationsService : IReservationsService
     {
         var query = dataContext.GetData<Entities.Reservation>();
         var dbReservations = await query.ToListAsync();
-        if (dbReservations != null && dbReservations.Count > 0)
-        {
-            dataContext.Delete(dbReservations);
-            await dataContext.SaveAsync();
-        }
+        dataContext.Delete(dbReservations);
+        await dataContext.SaveAsync();
     }
     public async Task DeleteAsync(Guid id)
     {
         var dbReservation = await dataContext.GetAsync<Entities.Reservation>(id);
-        if (dbReservation != null)
-        {
-            dataContext.Delete(dbReservation);
-            await dataContext.SaveAsync();
-        }
+        dataContext.Delete(dbReservation);
+        await dataContext.SaveAsync();
     }
     public async Task<Reservation> GetAsync(Guid id)
     {
@@ -74,6 +68,13 @@ public class ReservationsService : IReservationsService
         }
 
         await dataContext.SaveAsync();
-        return mapper.Map<Reservation>(dbReservation);
+
+        //get the saved reservation
+        var person = await peopleService.GetAsync(dbReservation.IdPerson);
+        var vehicle = await vehiclesService.GetAsync(dbReservation.IdVehicle);
+        var reservation = mapper.Map<Reservation>(dbReservation);
+        reservation.Person = person;
+        reservation.Vehicle = vehicle;
+        return reservation;
     }
 }

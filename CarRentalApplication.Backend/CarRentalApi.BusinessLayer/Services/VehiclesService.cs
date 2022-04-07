@@ -22,20 +22,14 @@ public class VehiclesService : IVehiclesService
     {
         var query = dataContext.GetData<Entities.Vehicle>();
         var dbVehicles = await query.ToListAsync();
-        if (dbVehicles != null || dbVehicles.Count > 0)
-        {
-            dataContext.Delete(dbVehicles);
-            await dataContext.SaveAsync();
-        }
+        dataContext.Delete(dbVehicles);
+        await dataContext.SaveAsync();
     }
     public async Task DeleteAsync(Guid id)
     {
         var dbVehicle = await dataContext.GetAsync<Entities.Vehicle>(id);
-        if (dbVehicle != null)
-        {
-            dataContext.Delete(dbVehicle);
-            await dataContext.SaveAsync();
-        }
+        dataContext.Delete(dbVehicle);
+        await dataContext.SaveAsync();
     }
     public async Task<Vehicle> GetAsync(Guid id)
     {

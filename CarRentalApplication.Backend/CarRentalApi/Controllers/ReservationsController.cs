@@ -17,6 +17,22 @@ namespace CarRentalApi.Controllers
             this.reservationsService = reservationsService;
         }
 
+        [HttpDelete("DeleteReservations")]
+        [ProducesResponseType(200, Type = typeof(string))]
+        public async Task<IActionResult> DeleteReservations()
+        {
+            await reservationsService.DeleteAsync();
+            return Ok("Reservations successfully deleted");
+        }
+
+        [HttpDelete("DeleteReservation")]
+        [ProducesResponseType(200, Type = typeof(string))]
+        public async Task<IActionResult> DeleteReservation(Guid id)
+        {
+            await reservationsService.DeleteAsync(id);
+            return Ok("Reservation successfully deleted");
+        }
+
         [HttpGet("GetReservation")]
         [ProducesResponseType(200, Type = typeof(Reservation))]
         [ProducesResponseType(404, Type = typeof(string))]

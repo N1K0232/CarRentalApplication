@@ -17,6 +17,22 @@ public class VehiclesController : ControllerBase
         this.vehiclesService = vehiclesService;
     }
 
+    [HttpDelete("DeleteVehicles")]
+    [ProducesResponseType(200, Type = typeof(string))]
+    public async Task<IActionResult> DeleteVehicles()
+    {
+        await vehiclesService.DeleteAsync();
+        return Ok("Vehicles successfully deleted");
+    }
+
+    [HttpDelete("DeleteVehicle")]
+    [ProducesResponseType(200, Type = typeof(string))]
+    public async Task<IActionResult> DeleteVehicle(Guid id)
+    {
+        await vehiclesService.DeleteAsync(id);
+        return Ok("Vehicle successfully deleted");
+    }
+
     [HttpGet("GetVehicle")]
     [ProducesResponseType(200, Type = typeof(Vehicle))]
     [ProducesResponseType(404, Type = typeof(string))]

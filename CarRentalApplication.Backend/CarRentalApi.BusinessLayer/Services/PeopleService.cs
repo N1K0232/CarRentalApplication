@@ -22,20 +22,14 @@ public class PeopleService : IPeopleService
     {
         var query = dataContext.GetData<Entities.Person>();
         var dbPeople = await query.ToListAsync();
-        if (dbPeople != null || dbPeople.Count > 0)
-        {
-            dataContext.Delete(dbPeople);
-            await dataContext.SaveAsync();
-        }
+        dataContext.Delete(dbPeople);
+        await dataContext.SaveAsync();
     }
     public async Task DeleteAsync(Guid idPerson)
     {
         var dbPerson = await dataContext.GetAsync<Entities.Person>(idPerson);
-        if (dbPerson != null)
-        {
-            dataContext.Delete(dbPerson);
-            await dataContext.SaveAsync();
-        }
+        dataContext.Delete(dbPerson);
+        await dataContext.SaveAsync();
     }
     public async Task<Person> GetAsync(Guid id)
     {

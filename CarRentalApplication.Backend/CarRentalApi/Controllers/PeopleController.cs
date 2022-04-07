@@ -17,6 +17,22 @@ public class PeopleController : ControllerBase
         this.peopleService = peopleService;
     }
 
+    [HttpDelete("DeletePeople")]
+    [ProducesResponseType(200, Type = typeof(string))]
+    public async Task<IActionResult> DeletePeople()
+    {
+        await peopleService.DeleteAsync();
+        return Ok("people successfully deleted");
+    }
+
+    [HttpDelete("DeletePerson")]
+    [ProducesResponseType(200, Type = typeof(string))]
+    public async Task<IActionResult> DeletePerson(Guid id)
+    {
+        await peopleService.DeleteAsync(id);
+        return Ok("person successfully");
+    }
+
     [HttpGet("GetPerson")]
     [ProducesResponseType(200, Type = typeof(Person))]
     [ProducesResponseType(404, Type = typeof(string))]
