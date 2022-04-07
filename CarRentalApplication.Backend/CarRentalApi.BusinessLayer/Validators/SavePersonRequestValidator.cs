@@ -17,11 +17,6 @@ namespace CarRentalApi.BusinessLayer.Validators
                 .NotNull()
                 .WithMessage("can't add a person without the surname");
 
-            RuleFor(p => p.BirthDate)
-                .NotEmpty()
-                .NotNull()
-                .WithMessage("can't add a person without the birth date");
-
             RuleFor(p => p.PhoneNumber)
                 .NotEmpty()
                 .NotNull()
