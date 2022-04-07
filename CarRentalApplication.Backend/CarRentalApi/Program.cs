@@ -47,11 +47,8 @@ builder.Services.AddScoped<IReservationsService, ReservationsService>();
 
 var app = builder.Build();
 app.UseProblemDetails();
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(o => o.SwaggerEndpoint("/swagger/v1/swagger.json", "CarRentalApi v1"));
-}
+app.UseSwagger();
+app.UseSwaggerUI(o => o.SwaggerEndpoint("/swagger/v1/swagger.json", "CarRentalApi v1"));
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
