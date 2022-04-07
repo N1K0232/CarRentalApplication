@@ -11,7 +11,7 @@
 		</ItemGroup>
 
 		<ItemGroup>
-		  <ProjectReference Include="..\CarRentalApi.Shared\CarRentalApi.Shared.csproj" />
+				<ProjectReference Include="..\CarRentalApi.Shared\CarRentalApi.Shared.csproj" />
 		</ItemGroup>
 
 </Project>
