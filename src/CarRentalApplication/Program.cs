@@ -1,16 +1,21 @@
 using System.Diagnostics;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using CarRentalApplication.BusinessLayer;
 using CarRentalApplication.BusinessLayer.Settings;
 using CarRentalApplication.ExceptionHandlers;
 using CarRentalApplication.Extensions;
 using CarRentalApplication.Swagger;
+using FluentValidation.AspNetCore;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using OperationResults.AspNetCore.Http;
 using TinyHelpers.AspNetCore.Extensions;
 using TinyHelpers.AspNetCore.Swagger;
+using TinyHelpers.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureServices(builder.Services, builder.Configuration, builder.Environment);
@@ -44,9 +49,27 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     services.AddWebOptimizer(minifyCss: true, minifyJavaScript: environment.IsProduction());
     services.AddRequestLocalization(appSettings.SupportedCultures);
 
+    services.AddOperationResult(options =>
+    {
+        options.ErrorResponseFormat = ErrorResponseFormat.List;
+    });
+
+    services.ConfigureHttpJsonOptions(options =>
+    {
+        options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
+        options.SerializerOptions.Converters.Add(new UtcDateTimeConverter());
+        options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+    services.AddFluentValidationAutoValidation(options =>
+    {
+        options.DisableDataAnnotationsValidation = true;
+    });
+
     if (swaggerSettings.Enabled)
     {
         services.AddEndpointsApiExplorer();
+
         services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo { Title = "CarRentalApi", Version = "v1" });
@@ -72,6 +95,10 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 
             options.UseAllOfToExtendReferenceSchemas();
             options.IncludeXmlComments(xmlPath);
+        })
+        .AddFluentValidationRulesToSwagger(options =>
+        {
+            options.SetNotNullableIfMinLengthGreaterThenZero = true;
         });
     }
 }
