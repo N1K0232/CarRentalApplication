@@ -1,17 +1,30 @@
 using System.Diagnostics;
+using System.Reflection;
+using CarRentalApplication.BusinessLayer;
+using CarRentalApplication.BusinessLayer.Settings;
 using CarRentalApplication.ExceptionHandlers;
+using CarRentalApplication.Extensions;
+using CarRentalApplication.Swagger;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Models;
+using TinyHelpers.AspNetCore.Extensions;
+using TinyHelpers.AspNetCore.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
-ConfigureServices(builder.Services, builder.Configuration);
+ConfigureServices(builder.Services, builder.Configuration, builder.Environment);
 
 var app = builder.Build();
 Configure(app, app.Environment, app.Services);
 
 await app.RunAsync();
 
-void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+void ConfigureServices(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
 {
+    var appSettings = services.ConfigureAndGet<AppSettings>(configuration, nameof(AppSettings));
+    var swaggerSettings = services.ConfigureAndGet<SwaggerSettings>(configuration, nameof(SwaggerSettings));
+
     services.AddHttpContextAccessor();
     services.AddRazorPages();
 
@@ -27,25 +40,86 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
             context.ProblemDetails.Extensions["traceId"] = Activity.Current?.Id ?? context.HttpContext.TraceIdentifier;
         };
     });
+
+    services.AddWebOptimizer(minifyCss: true, minifyJavaScript: environment.IsProduction());
+    services.AddRequestLocalization(appSettings.SupportedCultures);
+
+    if (swaggerSettings.Enabled)
+    {
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new OpenApiInfo { Title = "CarRentalApi", Version = "v1" });
+            options.AddDefaultResponse();
+            options.AddAcceptLanguageHeader();
+
+            options.MapType<DateTime>(() => new OpenApiSchema
+            {
+                Type = "string",
+                Format = "date-time",
+                Example = new OpenApiString(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"))
+            });
+
+            options.MapType<DateOnly>(() => new OpenApiSchema
+            {
+                Type = "string",
+                Format = "date",
+                Example = new OpenApiString(DateOnly.FromDateTime(DateTime.UtcNow).ToString("yyyy-MM-dd"))
+            });
+
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+            options.UseAllOfToExtendReferenceSchemas();
+            options.IncludeXmlComments(xmlPath);
+        });
+    }
 }
 
 void Configure(IApplicationBuilder app, IWebHostEnvironment environment, IServiceProvider services)
 {
+    var appSettings = services.GetRequiredService<IOptions<AppSettings>>().Value;
+    var swaggerSettings = services.GetRequiredService<IOptions<SwaggerSettings>>().Value;
+
+    environment.ApplicationName = appSettings.ApplicationName;
+
     app.UseHttpsRedirection();
+    app.UseRequestLocalization();
 
-    if (!environment.IsDevelopment())
+    app.UseRouting();
+    app.UseWebOptimizer();
+
+    app.UseWhen(context => context.IsWebRequest(), builder =>
     {
-        app.UseExceptionHandler("/Errors/500");
-        app.UseHsts();
-    }
+        if (!environment.IsDevelopment())
+        {
+            builder.UseExceptionHandler("/Errors/500");
+            builder.UseHsts();
+        }
 
-    app.UseStatusCodePagesWithReExecute("/Errors/{0}");
+        builder.UseStatusCodePagesWithReExecute("/Errors/{0}");
+    });
+
+    app.UseWhen(context => context.IsApiRequest(), builder =>
+    {
+        builder.UseExceptionHandler();
+        builder.UseStatusCodePages();
+    });
 
     app.UseDefaultFiles();
     app.UseStaticFiles();
 
-    app.UseRouting();
-    app.UseAuthorization();
+    if (swaggerSettings.Enabled)
+    {
+        app.UseMiddleware<SwaggerAuthenticationMiddleware>();
+
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "CarRentalApi v1");
+            options.InjectStylesheet("/css/swagger.css");
+        });
+    }
 
     app.UseEndpoints(endpoints =>
     {
