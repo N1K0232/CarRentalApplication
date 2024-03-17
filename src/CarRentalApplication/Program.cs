@@ -3,12 +3,14 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using CarRentalApplication.BusinessLayer;
 using CarRentalApplication.BusinessLayer.Settings;
+using CarRentalApplication.DataAccessLayer;
 using CarRentalApplication.ExceptionHandlers;
 using CarRentalApplication.Extensions;
 using CarRentalApplication.Swagger;
 using FluentValidation.AspNetCore;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
@@ -101,6 +103,9 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
             options.SetNotNullableIfMinLengthGreaterThenZero = true;
         });
     }
+
+    services.AddSqlServer<DataContext>(configuration.GetConnectionString("SqlConnection"));
+    services.AddScoped<IDataContext>(services => services.GetRequiredService<DataContext>());
 }
 
 void Configure(IApplicationBuilder app, IWebHostEnvironment environment, IServiceProvider services)
