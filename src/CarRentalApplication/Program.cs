@@ -1,25 +1,54 @@
-var builder = WebApplication.CreateBuilder(args);
+using System.Diagnostics;
+using CarRentalApplication.ExceptionHandlers;
+using Microsoft.AspNetCore.WebUtilities;
 
-// Add services to the container.
-builder.Services.AddRazorPages();
+var builder = WebApplication.CreateBuilder(args);
+ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
+Configure(app, app.Environment, app.Services);
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+await app.RunAsync();
+
+void ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    services.AddHttpContextAccessor();
+    services.AddRazorPages();
+
+    services.AddExceptionHandler<DefaultExceptionHandler>();
+    services.AddProblemDetails(options =>
+    {
+        options.CustomizeProblemDetails = context =>
+        {
+            var statusCode = context.ProblemDetails.Status.GetValueOrDefault(StatusCodes.Status500InternalServerError);
+            context.ProblemDetails.Type ??= $"https://httpstatuses.io/{statusCode}";
+            context.ProblemDetails.Title ??= ReasonPhrases.GetReasonPhrase(statusCode);
+            context.ProblemDetails.Instance ??= context.HttpContext.Request.Path;
+            context.ProblemDetails.Extensions["traceId"] = Activity.Current?.Id ?? context.HttpContext.TraceIdentifier;
+        };
+    });
 }
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
+void Configure(IApplicationBuilder app, IWebHostEnvironment environment, IServiceProvider services)
+{
+    app.UseHttpsRedirection();
 
-app.UseRouting();
+    if (!environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Errors/500");
+        app.UseHsts();
+    }
 
-app.UseAuthorization();
+    app.UseStatusCodePagesWithReExecute("/Errors/{0}");
 
-app.MapRazorPages();
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
 
-app.Run();
+    app.UseRouting();
+    app.UseAuthorization();
+
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapRazorPages();
+    });
+}

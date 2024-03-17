@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRentalApplication", "src\CarRentalApplication\CarRentalApplication.csproj", "{8FAB7409-5CED-4C3C-BF24-F1AAFD4FBE9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarRentalApplication", "src\CarRentalApplication\CarRentalApplication.csproj", "{8FAB7409-5CED-4C3C-BF24-F1AAFD4FBE9A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1B121771-8576-4DA3-8AC0-D4ADAA799967}"
 	ProjectSection(SolutionItems) = preProject
@@ -23,5 +23,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3C53C027-4396-4751-8C34-823063FE54F8}
 	EndGlobalSection
 EndGlobal
