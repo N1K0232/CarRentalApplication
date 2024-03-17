@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CarRentalApplication.Database\CarRentalApplication.Database.sqlproj" />
+  </ItemGroup>
+
 </Project>
