@@ -1,0 +1,12 @@
+﻿@using CarRentalApplication.BusinessLayer.Settings;
+@using Microsoft.AspNetCore.Http.Extensions;
+@using Microsoft.Extensions.Options;
+
+@inject IWebHostEnvironment environment;
+@inject IOptions<AppSettings> appSettingsOptions;
+
+<meta property="og:site_name" content="@environment.ApplicationName" />
+<meta property="og:title" content="@environment.ApplicationName" />
+<meta property="og:description" content="@appSettingsOptions.Value.ApplicationDescription" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="@Context.Request.GetEncodedUrl()" />
