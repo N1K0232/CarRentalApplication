@@ -6,6 +6,7 @@ using CarRentalApplication.BusinessLayer.Settings;
 using CarRentalApplication.DataAccessLayer;
 using CarRentalApplication.ExceptionHandlers;
 using CarRentalApplication.Extensions;
+using CarRentalApplication.StorageProviders.Extensions;
 using CarRentalApplication.Swagger;
 using FluentValidation.AspNetCore;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
@@ -106,6 +107,22 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 
     services.AddSqlServer<DataContext>(configuration.GetConnectionString("SqlConnection"));
     services.AddScoped<IDataContext>(services => services.GetRequiredService<DataContext>());
+
+    if (environment.IsDevelopment())
+    {
+        services.AddFileSystemStorage(options =>
+        {
+            options.StorageFolder = appSettings.StorageFolder;
+        });
+    }
+    else
+    {
+        services.AddAzureStorage(options =>
+        {
+            options.ConnectionString = configuration.GetConnectionString("AzureStorageConnection");
+            options.ContainerName = appSettings.ContainerName;
+        });
+    }
 }
 
 void Configure(IApplicationBuilder app, IWebHostEnvironment environment, IServiceProvider services)
