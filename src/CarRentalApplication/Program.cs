@@ -1,13 +1,22 @@
 using System.Diagnostics;
+using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using CarRentalApplication.BusinessLayer;
+using CarRentalApplication.BusinessLayer.Clients;
+using CarRentalApplication.BusinessLayer.Clients.Interfaces;
+using CarRentalApplication.BusinessLayer.MapperProfiles;
+using CarRentalApplication.BusinessLayer.Services;
+using CarRentalApplication.BusinessLayer.Services.Interfaces;
 using CarRentalApplication.BusinessLayer.Settings;
+using CarRentalApplication.BusinessLayer.Validations;
 using CarRentalApplication.DataAccessLayer;
 using CarRentalApplication.ExceptionHandlers;
 using CarRentalApplication.Extensions;
 using CarRentalApplication.StorageProviders.Extensions;
 using CarRentalApplication.Swagger;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.WebUtilities;
@@ -15,6 +24,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using MinimalHelpers.Routing;
 using OperationResults.AspNetCore.Http;
 using TinyHelpers.AspNetCore.Extensions;
 using TinyHelpers.AspNetCore.Swagger;
@@ -32,6 +42,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 {
     var appSettings = services.ConfigureAndGet<AppSettings>(configuration, nameof(AppSettings));
     var swaggerSettings = services.ConfigureAndGet<SwaggerSettings>(configuration, nameof(SwaggerSettings));
+    var fiscalCodeApiSettings = services.ConfigureAndGet<FiscalCodeApiSettings>(configuration, nameof(FiscalCodeApiSettings));
 
     services.AddHttpContextAccessor();
     services.AddRazorPages();
@@ -63,6 +74,9 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
         options.SerializerOptions.Converters.Add(new UtcDateTimeConverter());
         options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+
+    services.AddAutoMapper(typeof(PersonMapperProfile).Assembly);
+    services.AddValidatorsFromAssemblyContaining<SavePersonRequestValidator>();
 
     services.AddFluentValidationAutoValidation(options =>
     {
@@ -123,6 +137,15 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
             options.ContainerName = appSettings.ContainerName;
         });
     }
+
+    services.AddHttpClient<IFiscalCodeApiClient, FiscalCodeApiClient>(client =>
+    {
+        client.BaseAddress = new Uri(fiscalCodeApiSettings.BaseUrl);
+        client.DefaultRequestHeaders.Accept.Clear();
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+    });
+
+    services.AddScoped<IPeopleService, PeopleService>();
 }
 
 void Configure(IApplicationBuilder app, IWebHostEnvironment environment, IServiceProvider services)
@@ -172,6 +195,7 @@ void Configure(IApplicationBuilder app, IWebHostEnvironment environment, IServic
 
     app.UseEndpoints(endpoints =>
     {
+        endpoints.MapEndpoints();
         endpoints.MapRazorPages();
     });
 }
