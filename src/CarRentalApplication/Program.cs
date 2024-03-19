@@ -4,6 +4,7 @@ using System.Net.Mime;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using CarRentalApplication.BusinessLayer;
+using CarRentalApplication.BusinessLayer.BackgroundServices;
 using CarRentalApplication.BusinessLayer.Clients;
 using CarRentalApplication.BusinessLayer.Clients.Interfaces;
 using CarRentalApplication.BusinessLayer.MapperProfiles;
@@ -146,6 +147,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     });
 
     services.AddScoped<IPeopleService, PeopleService>();
+    services.AddHostedService<DataContextConnectionService>();
 }
 
 void Configure(IApplicationBuilder app, IWebHostEnvironment environment, IServiceProvider services)
